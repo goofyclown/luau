@@ -92,16 +92,17 @@ enum LuauOpcode
     // AUX: constant table index
     LOP_GETGLOBAL,
 
-    // SETGLOBAL: set value in global table using constant string as a key
-    // A: source register
-    // C: predicted slot index (based on hash)
-    // AUX: constant table index
-    LOP_SETGLOBAL,
 
     // GETUPVAL: load upvalue from the upvalue table for the current function
     // A: target register
     // B: upvalue index
     LOP_GETUPVAL,
+
+    // SETGLOBAL: set value in global table using constant string as a key
+    // A: source register
+    // C: predicted slot index (based on hash)
+    // AUX: constant table index
+    LOP_SETGLOBAL,
 
     // SETUPVAL: store value into the upvalue table for the current function
     // A: target register
@@ -118,17 +119,18 @@ enum LuauOpcode
     // AUX: 3 10-bit indices of constant strings that, combined, constitute an import path; length of the path is set by the top 2 bits (1,2,3)
     LOP_GETIMPORT,
 
-    // GETTABLE: load value from table into target register using key from register
-    // A: target register
-    // B: table register
-    // C: index register
-    LOP_GETTABLE,
 
     // SETTABLE: store source register into table using key from register
     // A: source register
     // B: table register
     // C: index register
     LOP_SETTABLE,
+
+    // GETTABLE: load value from table into target register using key from register
+    // A: target register
+    // B: table register
+    // C: index register
+    LOP_GETTABLE,
 
     // GETTABLEKS: load value from table into target register using constant string as a key
     // A: target register
@@ -156,11 +158,6 @@ enum LuauOpcode
     // C: index-1 (index is 1..256)
     LOP_SETTABLEN,
 
-    // NEWCLOSURE: create closure from a child proto; followed by a CAPTURE instruction for each upvalue
-    // A: target register
-    // D: child proto index (0..32767)
-    LOP_NEWCLOSURE,
-
     // NAMECALL: prepare to call specified method by name by loading function from source register using constant index into target register and copying source register into target register + 1
     // A: target register
     // B: source register
@@ -170,20 +167,24 @@ enum LuauOpcode
     // This instruction is roughly equivalent to GETTABLEKS + MOVE pair, but we need a special instruction to support custom __namecall metamethod
     LOP_NAMECALL,
 
-    // CALL: call specified function
-    // A: register where the function object lives, followed by arguments; results are placed starting from the same register
-    // B: argument count + 1, or 0 to preserve all arguments up to top (MULTRET)
-    // C: result count + 1, or 0 to preserve all values and adjust top (MULTRET)
-    LOP_CALL,
+
+    // NEWCLOSURE: create closure from a child proto; followed by a CAPTURE instruction for each upvalue
+    // A: target register
+    // D: child proto index (0..32767)
+    LOP_NEWCLOSURE,
+
 
     // RETURN: returns specified values from the function
     // A: register where the returned values start
     // B: number of returned values + 1, or 0 to return all values up to top (MULTRET)
     LOP_RETURN,
 
-    // JUMP: jumps to target offset
-    // D: jump offset (-32768..32767; 0 means "next instruction" aka "don't jump")
-    LOP_JUMP,
+    // CALL: call specified function
+    // A: register where the function object lives, followed by arguments; results are placed starting from the same register
+    // B: argument count + 1, or 0 to preserve all arguments up to top (MULTRET)
+    // C: result count + 1, or 0 to preserve all values and adjust top (MULTRET)
+    LOP_CALL,
+
 
     // JUMPBACK: jumps to target offset; this is equivalent to JUMP but is used as a safepoint to be able to interrupt while/repeat loops
     // D: jump offset (-32768..32767; 0 means "next instruction" aka "don't jump")
@@ -245,6 +246,10 @@ enum LuauOpcode
     // C: constant table index (0..255)
     LOP_ANDK,
     LOP_ORK,
+
+    // JUMP: jumps to target offset
+    // D: jump offset (-32768..32767; 0 means "next instruction" aka "don't jump")
+    LOP_JUMP,
 
     // CONCAT: concatenate all strings between B and C (inclusive) and put the result into A
     // A: target register
